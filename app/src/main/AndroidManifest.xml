@@ -12,6 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KumApp"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyApblmJOKLWjH7sEo5fcfuMo-w7AT2-au8"
+            />
         <activity
             android:name=".MainActivity"
             android:exported="true"
