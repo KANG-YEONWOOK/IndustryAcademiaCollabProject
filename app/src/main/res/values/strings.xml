@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">KumApp</string>
+    <string name="searchLabel">검색할 내용을 입력하세요.</string>
+    <string name="Eventpage">이벤트</string>
+    <string name="Menu">메뉴</string>
+    <string name="CharacterPage">내 쿠펫</string>
+    <string name="Friend">내 친구</string>
+    <string name="KUlong">쿠롱이</string>
+    <string name="ToEvolve">진화까지 남은 발걸음 : </string>
+</resources>
