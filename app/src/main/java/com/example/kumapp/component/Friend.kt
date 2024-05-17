@@ -9,9 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.example.kumapp.MainActivityViewModel
 
 @Composable
-fun Friend(navController: NavHostController) {
+fun Friend(navController: NavHostController, viewModel: MainActivityViewModel) {
     Scaffold (topBar = {
         TopBar(navController = navController)
     }) { contentPadding ->

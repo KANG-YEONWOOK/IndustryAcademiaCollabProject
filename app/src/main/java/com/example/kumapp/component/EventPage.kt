@@ -29,10 +29,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.kumapp.MainActivityViewModel
 import com.example.kumapp.R
 
 @Composable
-fun EventPage(navController: NavHostController) {
+fun EventPage(navController: NavHostController, viewModel: MainActivityViewModel) {
 
     var quizAnswer by remember{ mutableStateOf("") }
 
