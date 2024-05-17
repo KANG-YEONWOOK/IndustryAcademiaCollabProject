@@ -12,6 +12,10 @@ navigationCompose = "2.8.0-alpha08"
 materialIconsExtended = "1.7.0-beta01"
 playServicesMaps = "18.2.0"
 playServicesLocation = "21.2.0"
+mapsCompose = "5.0.1"
+mapsComposeUtils = "5.0.1"
+mapsComposeWidgets = "5.0.1"
+accompanistPermissions = "0.35.0-alpha"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +36,10 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "mapsCompose" }
+maps-compose-utils = { group = "com.google.maps.android", name = "maps-compose-utils", version.ref = "mapsComposeUtils" }
+maps-compose-widgets = { group = "com.google.maps.android", name = "maps-compose-widgets", version.ref = "mapsComposeWidgets" }
+accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanistPermissions" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -1,6 +1,5 @@
 package com.example.kumapp.component
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -43,8 +42,7 @@ fun BottomBar(navController: NavController) {
                 },
                 icon = {
                     Icon(
-                        modifier = Modifier.size(48.dp)
-                            .padding(bottom=12.dp),
+                        modifier = Modifier.size(36.dp),
                         imageVector = it.icon,
                         contentDescription = stringResource(id = it.iconName),
                         tint = selectedColor

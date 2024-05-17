@@ -4,16 +4,12 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsTransitFilled
 import androidx.compose.material.icons.filled.Place
@@ -22,7 +18,9 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults.elevation
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,43 +28,74 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.kumapp.MainActivityViewModel
 import com.example.kumapp.R
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
-fun HomeScreen(navController: NavHostController){
+fun HomeScreen(navController: NavHostController, viewModel: MainActivityViewModel){
     var search by remember{ mutableStateOf("") }
+    val context = LocalContext.current
+    val locationClient = remember{ LocationServices.getFusedLocationProviderClient(context) }
+    var locationNow = remember{ mutableStateOf<LatLng?>(null) }
+    val cameraPositionState = rememberCameraPositionState{
+        position = CameraPosition.fromLatLngZoom(locationNow.value?:LatLng(37.5424219288, 127.076761802), 18f)}
+
+    RequestLocationPermission(
+        onPermissionGranted = {
+            try{
+                locationClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY,null).addOnSuccessListener { locationResult ->
+                    locationResult?.let { location ->
+                        locationNow.value = LatLng(location.latitude, location.longitude)
+                    }
+                }
+            }catch(e: SecurityException){
+                e.printStackTrace()
+            }
+        }
+    )
+
+    //AIzaSyApblmJOKLWjH7sEo5fcfuMo-w7AT2-au8
 
     Box(modifier = Modifier
-        .fillMaxWidth()
+        .fillMaxWidth(),
+
     ){
-        //지도구현
-        BasicTextField(
+        GoogleMap(modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            uiSettings = MapUiSettings(
+                compassEnabled = false,
+                myLocationButtonEnabled = true
+            )
+        )
+        OutlinedTextField(
+            value = search,
+            onValueChange = {search = it},
             modifier = Modifier
                 .padding(16.dp)
-                .height(48.dp)
+                .height(60.dp)
                 .border(
                     3.dp,
                     color = colorResource(id = R.color.kudarkgreen),
                     shape = RoundedCornerShape(12)
-                ),
-            maxLines = 1,
-            value = search,
-            onValueChange = {search = it},
-            textStyle = LocalTextStyle.current.copy(fontSize = 25.sp),
-            decorationBox = { innerTextField ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Spacer(modifier = Modifier.padding(0.dp))
-                    innerTextField()
-                    Spacer(modifier = Modifier.width(8.dp))
+                )
+                .fillMaxWidth(),
+            placeholder = {Text(text="건물/강의실 검색", fontSize = 16.sp)},
+            trailingIcon = {
+                IconButton(onClick = {}) {
                     Icon(
                         modifier = Modifier
                             .size(40.dp)
@@ -76,10 +105,45 @@ fun HomeScreen(navController: NavHostController){
                         tint = colorResource(id = R.color.kudarkgreen),
                     )
                 }
-            }
-            //건물들 이름 쭉 저장해두고 search(검색한 내용)이 들어가 있는
-            //건물을 검색해서 선택모달 띄우고 길찾기 기능 수행
+            },
+            singleLine = true
         )
+//        BasicTextField(
+//            modifier = Modifier
+//                .padding(16.dp)
+//                .height(48.dp)
+//                .border(
+//                    3.dp,
+//                    color = colorResource(id = R.color.kudarkgreen),
+//                    shape = RoundedCornerShape(12)
+//                ),
+//            maxLines = 1,
+//            value = search,
+//            onValueChange = {search = it},
+//            textStyle = LocalTextStyle.current.copy(fontSize = 25.sp),
+//            decorationBox = { innerTextField ->
+//                Row(
+//                    modifier = Modifier
+//                        .fillMaxWidth(),
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.SpaceBetween,
+//                ) {
+//                    Spacer(modifier = Modifier.padding(0.dp))
+//                    innerTextField()
+//                    Spacer(modifier = Modifier.width(8.dp))
+//                    Icon(
+//                        modifier = Modifier
+//                            .size(40.dp)
+//                            .padding(end = 6.dp),
+//                        imageVector = Icons.Default.Search,
+//                        contentDescription = null,
+//                        tint = colorResource(id = R.color.kudarkgreen),
+//                    )
+//                }
+//            }
+//            //건물들 이름 쭉 저장해두고 search(검색한 내용)이 들어가 있는
+//            //건물을 검색해서 선택모달 띄우고 길찾기 기능 수행
+//        )
     }
 
     Column(modifier= Modifier
@@ -87,18 +151,28 @@ fun HomeScreen(navController: NavHostController){
         .padding(12.dp),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.End) {
-        FloatingActionButton(
-            modifier = Modifier.padding(10.dp).size(60.dp),
+        FloatingActionButton( //현위치로 이동
+            modifier = Modifier
+                .padding(10.dp)
+                .size(60.dp),
             shape = RoundedCornerShape(100),
             containerColor = colorResource(id = R.color.kulightgreen),
             elevation = elevation(0.dp),
-            onClick = { /*지도 내 현위치이동*/ }) {
+            onClick = {
+                getLastKnownLocation(locationClient) { latLng ->
+                    locationNow.value = latLng
+                    cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(latLng, 18f))
+                }
+            }
+        ) {
             Icon(imageVector = Icons.Default.Place,
                 contentDescription = null,
                 tint = colorResource(id = R.color.kudarkgreen))
         }
         FloatingActionButton(
-            modifier = Modifier.padding(10.dp).size(60.dp),
+            modifier = Modifier
+                .padding(10.dp)
+                .size(60.dp),
             shape = RoundedCornerShape(100),
             containerColor = colorResource(id = R.color.kulightgreen),
             elevation = elevation(0.dp),
@@ -108,7 +182,9 @@ fun HomeScreen(navController: NavHostController){
                 tint = colorResource(id = R.color.kudarkgreen))
         }
         FloatingActionButton(
-            modifier = Modifier.padding(10.dp).size(60.dp),
+            modifier = Modifier
+                .padding(10.dp)
+                .size(60.dp),
             shape = RoundedCornerShape(100),
             containerColor = colorResource(id = R.color.kulightgreen),
             elevation = elevation(0.dp),
@@ -117,5 +193,17 @@ fun HomeScreen(navController: NavHostController){
                 contentDescription = null,
                 tint = colorResource(id = R.color.kudarkgreen))
         }
+    }
+}
+
+fun getLastKnownLocation(fusedLocationProviderClient: FusedLocationProviderClient, onLocationReceived: (LatLng) -> Unit) {
+    try {
+        fusedLocationProviderClient.getCurrentLocation(PRIORITY_HIGH_ACCURACY,null).addOnSuccessListener { locationResult ->
+            locationResult?.let {
+                onLocationReceived(LatLng(it.latitude, it.longitude))
+            }
+        }
+    } catch (e: SecurityException) {
+        e.printStackTrace()  // 예외 처리
     }
 }
